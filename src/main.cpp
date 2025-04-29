@@ -4,13 +4,13 @@
 #include <thread>
 #include <chrono>
 #include "deribit_trading_system.h"
-
+using namespace std;
 // Global trading system pointer for signal handling
 deribit::TradingSystem* g_trading_system = nullptr;
 
 // Signal handler for graceful shutdown
 void signal_handler(int signal) {
-    std::cout << "Received signal " << signal << ", shutting down..." << std::endl;
+    cout << "Received signal " << signal << ", shutting down..." << std;
     
     if (g_trading_system && g_trading_system->is_running()) {
         g_trading_system->stop();
@@ -21,68 +21,68 @@ int main(int argc, char* argv[]) {
     try {
         // Check command line arguments
         if (argc < 3) {
-            std::cerr << "Usage: " << argv[0] << " <api_key> <api_secret> [websocket_port]" << std::endl;
+            cerr << "Usage: " << argv[0] << " <api_key> <api_secret> [websocket_port]" << endl;
             return 1;
         }
         
         // Parse command line arguments
-        std::string api_key = argv[1];
-        std::string api_secret = argv[2];
-        uint16_t websocket_port = (argc > 3) ? static_cast<uint16_t>(std::stoi(argv[3])) : 9000;
+        string api_key = argv[1];
+        string api_secret = argv[2];
+        uint16_t websocket_port = (argc > 3) ? static_cast<uint16_t>(stoi(argv[3])) : 9000;
         
         // Set up signal handling
-        std::signal(SIGINT, signal_handler);
-        std::signal(SIGTERM, signal_handler);
+        signal(SIGINT, signal_handler);
+        signal(SIGTERM, signal_handler);
         
         // Create trading system
         deribit::TradingSystem trading_system(api_key, api_secret, true, websocket_port);
         g_trading_system = &trading_system;
         
         // Initialize trading system
-        std::cout << "Initializing trading system..." << std::endl;
+        cout << "Initializing trading system..." << endl;
         if (!trading_system.initialize()) {
-            std::cerr << "Failed to initialize trading system" << std::endl;
+            cerr << "Failed to initialize trading system" << endl;
             return 1;
         }
         
         // Start trading system
-        std::cout << "Starting trading system..." << std::endl;
+        cout << "Starting trading system..." << endl;
         if (!trading_system.start()) {
-            std::cerr << "Failed to start trading system" << std::endl;
+            cerr << "Failed to start trading system" << endl;
             return 1;
         }
         
         // Subscribe to market data for BTC-PERPETUAL
-        std::cout << "Subscribing to market data..." << std::endl;
+        cout << "Subscribing to market data..." << endl;
         if (!trading_system.subscribe_market_data("BTC-PERPETUAL")) {
-            std::cerr << "Failed to subscribe to market data" << std::endl;
+            cerr << "Failed to subscribe to market data" << endl;
         }
         
         // Get order manager
         auto order_manager = trading_system.get_order_manager();
         
         // Get orderbook
-        std::cout << "Getting orderbook..." << std::endl;
+        cout << "Getting orderbook..." << endl;
         auto orderbook = order_manager->get_orderbook("BTC-PERPETUAL");
         
         // Print orderbook
-        std::cout << "Orderbook for BTC-PERPETUAL:" << std::endl;
-        std::cout << "Timestamp: " << orderbook.timestamp << std::endl;
+        cout << "Orderbook for BTC-PERPETUAL:" << endl;
+        cout << "Timestamp: " << orderbook.timestamp << endl;
         
-        std::cout << "Bids:" << std::endl;
-        for (size_t i = 0; i < std::min(orderbook.bids.size(), size_t(5)); ++i) {
-            std::cout << "  " << orderbook.bids[i].first << " @ " << orderbook.bids[i].second << std::endl;
+        cout << "Bids:" << endl;
+        for (size_t i = 0; i < min(orderbook.bids.size(), size_t(5)); ++i) {
+            cout << "  " << orderbook.bids[i].first << " @ " << orderbook.bids[i].second << endl;
         }
         
-        std::cout << "Asks:" << std::endl;
-        for (size_t i = 0; i < std::min(orderbook.asks.size(), size_t(5)); ++i) {
-            std::cout << "  " << orderbook.asks[i].first << " @ " << orderbook.asks[i].second << std::endl;
+        cout << "Asks:" << endl;
+        for (size_t i = 0; i < min(orderbook.asks.size(), size_t(5)); ++i) {
+            cout << "  " << orderbook.asks[i].first << " @ " << orderbook.asks[i].second << endl;
         }
         
         // Place a limit order (commented out to avoid actual trading)
         /*
-        std::cout << "Placing limit order..." << std::endl;
-        std::string order_id = order_manager->place_order(
+        cout << "Placing limit order..." << endl;
+        string order_id = order_manager->place_order(
             "BTC-PERPETUAL",
             deribit::OrderType::LIMIT,
             deribit::OrderDirection::BUY,
@@ -92,63 +92,63 @@ int main(int argc, char* argv[]) {
         );
         
         if (!order_id.empty()) {
-            std::cout << "Order placed with ID: " << order_id << std::endl;
+            cout << "Order placed with ID: " << order_id << endl;
             
             // Wait a bit
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            this_thread::sleep_for(chrono::seconds(2));
             
             // Modify the order
-            std::cout << "Modifying order..." << std::endl;
+            cout << "Modifying order..." << endl;
             if (order_manager->modify_order(order_id, 0.2, 0.0)) {
-                std::cout << "Order modified successfully" << std::endl;
+                cout << "Order modified successfully" << endl;
             } else {
-                std::cerr << "Failed to modify order" << std::endl;
+                cerr << "Failed to modify order" << endl;
             }
             
             // Wait a bit
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            this_thread::sleep_for(chrono::seconds(2));
             
             // Cancel the order
-            std::cout << "Canceling order..." << std::endl;
+            cout << "Canceling order..." << endl;
             if (order_manager->cancel_order(order_id)) {
-                std::cout << "Order canceled successfully" << std::endl;
+                cout << "Order canceled successfully" << endl;
             } else {
-                std::cerr << "Failed to cancel order" << std::endl;
+                cerr << "Failed to cancel order" << endl;
             }
         } else {
-            std::cerr << "Failed to place order" << std::endl;
+            cerr << "Failed to place order" << endl;
         }
         */
         
         // Run for a while to collect performance metrics
-        std::cout << "Running for 30 seconds to collect performance metrics..." << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(30));
+        cout << "Running for 30 seconds to collect performance metrics..." << endl;
+        this_thread::sleep_for(chrono::seconds(30));
         
         // Print performance metrics
-        std::cout << "\nPerformance Metrics:" << std::endl;
+        cout << "\nPerformance Metrics:" << endl;
         trading_system.print_performance_metrics();
         
         // Export performance metrics to CSV
-        std::string metrics_file = "performance_metrics.csv";
+        string metrics_file = "performance_metrics.csv";
         if (trading_system.export_performance_metrics(metrics_file)) {
-            std::cout << "Performance metrics exported to " << metrics_file << std::endl;
+            cout << "Performance metrics exported to " << metrics_file << endl;
         } else {
-            std::cerr << "Failed to export performance metrics" << std::endl;
+            cerr << "Failed to export performance metrics" << endl;
         }
         
         // Unsubscribe from market data
-        std::cout << "Unsubscribing from market data..." << std::endl;
+        cout << "Unsubscribing from market data..." << endl;
         if (!trading_system.unsubscribe_market_data("BTC-PERPETUAL")) {
-            std::cerr << "Failed to unsubscribe from market data" << std::endl;
+            cerr << "Failed to unsubscribe from market data" << endl;
         }
         
         // Stop trading system
-        std::cout << "Stopping trading system..." << std::endl;
+        cout << "Stopping trading system..." << endl;
         trading_system.stop();
         
         return 0;
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
         return 1;
     }
 }
