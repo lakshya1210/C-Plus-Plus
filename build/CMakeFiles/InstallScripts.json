@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/lakshya/Desktop/Projects/C plus plus/build/cmake_install.cmake",
+		"/Users/lakshya/Desktop/Projects/C plus plus/build/_deps/nlohmann_json-build/cmake_install.cmake",
+		"/Users/lakshya/Desktop/Projects/C plus plus/build/_deps/websocketpp-build/cmake_install.cmake",
+		"/Users/lakshya/Desktop/Projects/C plus plus/build/_deps/websocketpp-build/websocketpp/cmake_install.cmake",
+		"/Users/lakshya/Desktop/Projects/C plus plus/build/tests/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

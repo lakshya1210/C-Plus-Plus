@@ -9,6 +9,7 @@
 #include <thread>
 #include <condition_variable>
 #include <nlohmann/json.hpp>
+#include "websocketpp_asio_compatibility.h"
 #include <websocketpp/config/asio_client.hpp>
 #include <websocketpp/client.hpp>
 

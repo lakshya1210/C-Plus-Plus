@@ -8,6 +8,7 @@
 #include <memory>
 #include <functional>
 #include <thread>
+#include "websocketpp_asio_compatibility.h"
 #include <websocketpp/config/asio.hpp>
 #include <websocketpp/server.hpp>
 #include <nlohmann/json.hpp>
